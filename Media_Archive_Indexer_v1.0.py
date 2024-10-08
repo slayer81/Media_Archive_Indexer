@@ -13,10 +13,7 @@ Get item list for all Media_Archive locations. Insert into db & write to CSV fil
 ############################################################################
 # Global variables
 START_TIME = dt.datetime.now()
-# MARKER_40C = '#######################################'
 MARKER_CHAR = '#'
-BASE_PATH = os.getenv('TORBASE')
-OUTPUT_FILE = os.path.join(BASE_PATH, 'Media_Index_v1.0.csv')
 ############################################################################
 
 
@@ -116,10 +113,9 @@ def write_to_postgres(data):
 
 
 ############################################################################
-def write_to_csv(data):
-    global OUTPUT_FILE
+def write_to_csv(data, output_file):
     try:
-        with open(OUTPUT_FILE, 'w', newline='') as csvfile:
+        with open(output_file, 'w', newline='') as csvfile:
             writer = csv.writer(csvfile)
             writer.writerow(['Directory', 'Filesystem_Path'])
             writer.writerows(data)
@@ -133,6 +129,8 @@ def write_to_csv(data):
 ############################################################################
 def main():
     load_shell_environment()
+    base_path = os.getenv('TORBASE')
+    output_file = os.path.join(base_path, 'Media_Index_v1.0.csv')
 
     print(f'\n{MARKER_CHAR * 120}')
     print('{:>30}:\t {:<14}'.format('Starting execution at', str(dt.datetime.now())[:19]))
@@ -149,8 +147,8 @@ def main():
     write_to_postgres(sorted_dict)
 
     # Write index data to CSV file
-    print('{:>30}:\t {:<14}'.format('Writing data to', OUTPUT_FILE))
-    write_to_csv(sorted_dict)
+    print('{:>30}:\t {:<14}'.format('Writing data to', output_file))
+    write_to_csv(sorted_dict, output_file)
 
     print('\n{:>30}:\t {:<14}'.format('Total execution time', hm.precisedelta(dt.datetime.now() - START_TIME)))
     print(f'{MARKER_CHAR * 120}\n')
