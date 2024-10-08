@@ -21,6 +21,18 @@ OUTPUT_FILE = os.path.join(BASE_PATH, 'Media_Index_v1.0.csv')
 
 
 ############################################################################
+def load_shell_environment(profile_path="/Users/scott/.bash_profile"):
+    # Use subprocess to source the shell profile and print the environment variables
+    command = f"source {profile_path} && env"
+    proc = subprocess.Popen(command, stdout=subprocess.PIPE, shell=True, executable='/bin/bash')
+    for line in proc.stdout:
+        (key, _, value) = line.decode("utf-8").partition("=")
+        os.environ[key] = value.strip()
+
+############################################################################
+
+
+############################################################################
 def get_media_archive_paths():
     result = subprocess.run(
         ['find', '/Volumes', '-type', 'd', '-maxdepth', '2', '-name', 'Media_Archive'],
@@ -72,7 +84,8 @@ def write_to_postgres(data):
 
         # Connect to database
         conn = psycopg2.connect(
-            host='localhost',    # Change as needed
+#             host='localhost',    # Change as needed
+            host='127.0.0.1',    # Change as needed
             user=os.getenv("PG_username"),
             password=os.getenv("PG_password"),
             dbname=os.getenv("PG_database")
@@ -119,6 +132,8 @@ def write_to_csv(data):
 
 ############################################################################
 def main():
+    load_shell_environment()
+
     print(f'\n{MARKER_CHAR * 120}')
     print('{:>30}:\t {:<14}'.format('Starting execution at', str(dt.datetime.now())[:19]))
 
