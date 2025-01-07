@@ -104,9 +104,10 @@ def write_to_postgres(data):
             cursor.close()
         if conn:
             conn.close()
-
+        print('{:>30}:\t {:<14}'.format('Inserting data into database', 'SUCCESS!'))
     except psycopg2.Error as e:
         print('{:>87}\n'.format(f'{MARKER_CHAR * 80}'))
+        print('{:>30}:\t {:<14}'.format('Inserting data into database', 'FAILURE!'))
         print('{:>30}:\t {:<14}'.format('PostgreSQL Error', str(e)))
         print('{:>87}\n'.format(f'{MARKER_CHAR * 80}'))
 ############################################################################
@@ -133,6 +134,7 @@ def main():
     output_file = os.path.join(base_path, 'Media_Index_v1.0.csv')
 
     print(f'\n{MARKER_CHAR * 120}')
+    print('{:>30}:\t {:<14}'.format('Starting execution of script', str(__file__)))
     print('{:>30}:\t {:<14}'.format('Starting execution at', str(dt.datetime.now())[:19]))
 
     # Dynamic query to collect all potential target storage media
